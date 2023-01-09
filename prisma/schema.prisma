@@ -1,0 +1,211 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  // previewFeatures = ["referentialIntegrity"] deprecated!
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+  // https://www.prisma.io/docs/concepts/components/prisma-schema/relations/relation-mode
+}
+
+model User {
+  id              Int         @id @default(autoincrement())
+  //@id는 모델의 id라는걸 알려줌. 유니크 값이지. autoincrement자동으로 값이 증가하지
+  phone           String?     @unique
+  // ?는 optional, @unique폰넘버가 유니크했으면 좋겠다.
+  email           String?     @unique
+  name            String
+  // required는 물음표 안붙이면 됨.
+  avatar          String?
+  //이미지는 URL일 테니까
+  created         DateTime    @default(now())
+  //now() 유저 생성됐을 때
+  updated         DateTime    @updatedAt
+  //updatedat 이란게 있다.
+  tokens          Token[]
+  products        Product[]
+  fav             Fav[]
+  posts           Post[]
+  answers         Answer[]
+  winderings      Wondering[]
+  writtenReviews  Review[]    @relation(name: "writtenReviews")
+  receivedReviews Review[]    @relation(name: "receivedReviews")
+  sales           Sale[]
+  purchases       Purchase[]
+  records         Record[]
+}
+
+//Prisma는 이 파일을 읽고 데이터베이스에 changes를 deploy할 것이다.
+//Prisma는 이 파일을 읽고 자바스크립트 or 타입스크립트 client를 생성해줄것
+//근데 DB가 아직 없다.
+//만들었다.
+//https://app.planetscale.com/simssons/carrot-market
+// Users DB:
+// id: 1 username:nico
+
+// Comments DB:
+// id:1 text:wow! user:(Users DB:1)//객체주소알려주는거
+
+// id5인 사람(존재하지않는 사용자)이 만약 댓글 추가 하려면, 
+// 작성자의 정보화 함께 댓글을 달려면 맨 처음 User DB에서 id가 5인 사용자가 존재하는지 확인함.
+// 그렇기 때문에 Users DB에 반드시 있어야 함.(MySQL,PostgresQL 에서)
+
+// 근데 Vitess는 가능함. DB 분화에 특화되어있음.
+// 그래서 댓글 생성 전에 사용자가 존재하는지 확인하지 않음.
+// foreign key constraint를 지원하지 않음.
+// 그래서 저렇게 저장해도 오류 일어나지 않음.
+// 이는 좋은게 아니야
+// 그래서 이런 기능이 없는 Vitess가 아닌 Prisma에서 체크를 해야 함.
+
+model Token {
+  id      Int      @id @default(autoincrement())
+  payload String   @unique
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  //이건 db에 들어가지 않는다. userId가 db에 들어간다.
+  //db에게 아래 userId가 User의 그 userId라는걸 말해주는 격임. 이게 foreign key
+  //대신 이거 추가하면 token.user.phone 처럼 userdata 접근가능
+  userId  Int //이게 db에 들어간다.
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  created     DateTime   @default(now())
+  updated     DateTime   @updatedAt
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int
+  image       String
+  name        String
+  price       Int
+  description String     @db.MediumText
+  favs        Fav[]
+  sales       Sale[]
+  purchases   Purchase[]
+  records     Record[]
+
+  @@index([userId])
+}
+
+model Post {
+  id         Int         @id @default(autoincrement())
+  created    DateTime    @default(now())
+  updated    DateTime    @updatedAt
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int
+  question   String      @db.MediumText
+  latitude   Float?
+  longitude  Float?
+  answers    Answer[]
+  wonderings Wondering[]
+
+  @@index([userId])
+}
+
+model Answer {
+  id      Int      @id @default(autoincrement())
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  Int
+  answer  String   @db.MediumText
+
+  @@index([userId])
+  @@index([postId])
+}
+
+model Wondering {
+  id      Int      @id @default(autoincrement())
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId  Int
+  post    Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId  Int
+
+  @@index([userId])
+  @@index([postId])
+}
+
+model Review {
+  id           Int      @id @default(autoincrement())
+  created      DateTime @default(now())
+  updated      DateTime @updatedAt
+  review       String   @db.MediumText
+  createdBy    User     @relation(name: "writtenReviews", fields: [createdById], references: [id], onDelete: Cascade)
+  createdById  Int
+  createdFor   User     @relation(name: "receivedReviews", fields: [createdForId], references: [id], onDelete: Cascade)
+  createdForId Int
+  score        Int      @default(1)
+
+  @@index([createdById])
+  @@index([createdForId])
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  created   DateTime @default(now())
+  updated   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
+
+model Purchase {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  created   DateTime @default(now())
+  updated   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
+
+model Fav {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  created   DateTime @default(now())
+  updated   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
+
+model Record {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  created   DateTime @default(now())
+  kind      Kind
+  updated   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
+
+enum Kind {
+  Sale
+  Purchase
+  Fav
+}
