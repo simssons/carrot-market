@@ -55,8 +55,8 @@ export default function Layout({
               router.pathname === "/"
                 ? "text-orange-500"
                 : "hover:text-gray-500 transition-colors"
-            )}>
-
+            )}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -72,7 +72,6 @@ export default function Layout({
               ></path>
             </svg>
             <span>홈</span>
-
           </Link>
           <Link
             href="/community"
@@ -81,8 +80,8 @@ export default function Layout({
               router.pathname === "/community"
                 ? "text-orange-500"
                 : "hover:text-gray-500 transition-colors"
-            )}>
-
+            )}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -98,7 +97,6 @@ export default function Layout({
               ></path>
             </svg>
             <span>동네생활</span>
-
           </Link>
           <Link
             href="/chats"
@@ -107,8 +105,8 @@ export default function Layout({
               router.pathname === "/chats"
                 ? "text-orange-500"
                 : "hover:text-gray-500 transition-colors"
-            )}>
-
+            )}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -124,17 +122,16 @@ export default function Layout({
               ></path>
             </svg>
             <span>채팅</span>
-
           </Link>
           <Link
-            href="/live"
+            href="/streams"
             className={cls(
               "flex flex-col items-center space-y-2 ",
-              router.pathname === "/live"
+              router.pathname === "/streams"
                 ? "text-orange-500"
                 : "hover:text-gray-500 transition-colors"
-            )}>
-
+            )}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -150,7 +147,6 @@ export default function Layout({
               ></path>
             </svg>
             <span>라이브</span>
-
           </Link>
           <Link
             href="/profile"
@@ -159,8 +155,8 @@ export default function Layout({
               router.pathname === "/profile"
                 ? "text-orange-500"
                 : "hover:text-gray-500 transition-colors"
-            )}>
-
+            )}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -176,7 +172,6 @@ export default function Layout({
               ></path>
             </svg>
             <span>나의 캐럿</span>
-
           </Link>
         </nav>
       ) : null}

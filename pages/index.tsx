@@ -7,7 +7,8 @@ import Item from "../components/item";
 import Layout from "../components/layout";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
-
+// import Image from "next/image";
+// import myImage from "../public/local.jpg";
 export interface ProductWithCount extends Product {
   _count: {
     favs: number;
@@ -57,6 +58,7 @@ const Home: NextPage = () => {
           </svg>
         </FloatingButton>
       </div>
+      {/* <Image src={myImage} placeholder="blur" quality={100}/> */}
     </Layout>
   );
 };

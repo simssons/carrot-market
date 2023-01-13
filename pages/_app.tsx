@@ -17,3 +17,5 @@ export default function App({ Component, pageProps }: AppProps) {
     </SWRConfig>
   );
 }
+// "rollbackOnError: true"
+// rollbackOnError: should the cache rollback if the remote mutation errors.
