@@ -69,7 +69,7 @@ const StreamPage: NextPage = () => {
   //   }
   // }, [sendMessageData, mutate]);
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle="스트림 하세요">
       <div className="py-10 px-4  space-y-4">
         {data?.stream.cloudflareId ? (
           <iframe

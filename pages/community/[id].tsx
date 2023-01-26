@@ -27,12 +27,12 @@ interface CommunityPostResponse {
   isWondering: boolean;
 }
 interface AnswerForm {
-  answer: string;
-  register: UseFormRegisterReturn;
+  answer?: string;
+  // register: UseFormRegisterReturn;
 }
 interface AnswerResponse {
   ok: boolean;
-  answer: Answer;
+  response: Answer;
 }
 
 const CommunityPostDetail: NextPage = () => {
@@ -45,7 +45,7 @@ const CommunityPostDetail: NextPage = () => {
     `/api/posts/${router.query.id}/wonder`
   );
   const [sendAnswer, { data: answerData, loading: answerLoading }] =
-    useMutation(`/api/posts/${router.query.id}/answers`);
+    useMutation<AnswerResponse>(`/api/posts/${router.query.id}/answers`);
   const onWonderClick = () => {
     if (!data) return;
     mutate(
@@ -68,10 +68,9 @@ const CommunityPostDetail: NextPage = () => {
       wonder({});
     }
   };
-  const onValid = (form: AnswerForm) => {
-    console.log(form);
+  const onValid = (haha: AnswerForm) => {
     if (answerLoading) return;
-    sendAnswer(form);
+    sendAnswer(haha);
   };
   useEffect(() => {
     if (answerData && answerData.ok) {
@@ -81,7 +80,7 @@ const CommunityPostDetail: NextPage = () => {
   }, [answerData, reset, mutate]);
 
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle="동네질문">
       <div>
         <span className="inline-flex my-3 ml-4 items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
           동네질문
@@ -164,7 +163,7 @@ const CommunityPostDetail: NextPage = () => {
             </div>
           ))}
         </div>
-        <form className="px-4" onSubmit={handleSubmit(onValid)}>
+        <form onSubmit={handleSubmit(onValid)} className="px-4">
           <TextArea
             name="answer"
             placeholder="Answer this question!"

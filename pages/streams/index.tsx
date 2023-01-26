@@ -17,7 +17,7 @@ const Streams: NextPage = () => {
   //pagination streams?page=1
   const { data } = useSWR<StreamsResponse>(`/api/streams`);
   return (
-    <Layout hasTabBar title="라이브">
+    <Layout hasTabBar title="라이브" seoTitle="라이브">
       <div className=" divide-y-[1px] space-y-4">
         {data?.streams.map((stream) => (
           <Link

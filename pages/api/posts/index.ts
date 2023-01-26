@@ -24,6 +24,14 @@ async function handler(
         },
       },
     });
+    const apiTest = await fetch(
+      `http://localhost:3000/api/revalidate?secret=${process.env.ODR_TOKEN}`,
+      {
+        method: "POST",
+      }
+    );
+    console.log("apiTest", apiTest);
+
     res.json({
       ok: true,
       post,
@@ -33,39 +41,43 @@ async function handler(
     const {
       query: { latitude, longitude },
     } = req;
-    const parsedLatitude = parseFloat(latitude.toString());
-    const parsedLongitude = parseFloat(longitude.toString());
-    console.log(parsedLongitude);
+    if (latitude && longitude) {
+      const parsedLatitude = parseFloat(latitude.toString());
+      const parsedLongitude = parseFloat(longitude.toString());
 
-    const posts = await client.post.findMany({
-      include: {
-        user: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
+      const posts = await client.post.findMany({
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              avatar: true,
+            },
+          },
+          _count: {
+            select: {
+              wonderings: true,
+              answers: true,
+            },
           },
         },
-        _count: {
-          select: {
-            wonderings: true,
-            answers: true,
+        where: {
+          latitude: { gte: parsedLatitude - 0.01, lte: parsedLatitude + 0.01 },
+          longitude: {
+            gte: parsedLongitude - 0.01,
+            lte: parsedLongitude + 0.01,
           },
         },
-      },
-      where: {
-        latitude: { gte: parsedLatitude - 0.01, lte: parsedLatitude + 0.01 },
-        longitude: {
-          gte: parsedLongitude - 0.01,
-          lte: parsedLongitude + 0.01,
-        },
-      },
-    });
-
-    res.json({
-      ok: true,
-      posts,
-    });
+      });
+      res.json({
+        ok: true,
+        posts,
+      });
+    } else {
+      res.json({
+        ok: false,
+      });
+    }
   }
 }
 export default withApiSession(

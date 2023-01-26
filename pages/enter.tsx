@@ -1,16 +1,39 @@
 import type { NextPage } from "next";
-import { useEffect, useState } from "react";
-// import { useForm } from "react-hook-form/dist/useForm";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-// import Button from "../components/button";
-// import Input from "../components/input";
-// import useMutation from "@libs/client/userMutations";
-// import { cls } from "@libs/client/utils";
 import Button from "@components/button";
 import Input from "@components/input";
 import useMutation from "@libs/client/userMutations";
 import { cls } from "@libs/client/utils";
 import { useRouter } from "next/router";
+import Skeleton from "react-loading-skeleton";
+import dynamic from "next/dynamic";
+
+// const Bs = dynamic(() => import("@components/bs"), { ssr: false });
+// const Bs = dynamic(
+//   () =>
+//     new Promise((resolve) =>
+//       setTimeout(() => resolve(import("@components/bs")), 3000)
+//     ),
+//   { ssr: false, loading: () => <span>Loading a big component for you!</span> }
+// );
+//이런 식으로 Bs 불러서 사용하면 됨.
+//서버단에서 로딩하지 않게 설정 가능.
+// 서버에서 로딩한다면 파일위에서 컴포넌트 불러오고 렌더링 해주면
+// nextjs는 서버단에서 일반 HTML로 export 해줄거야.
+// 그러나 몇몇 라이브러리는 서버단에서 로딩하는게 불가능함. 그래서 서버단에서 불러오면 에러가 생가겠지.
+// 이게 위처럼 {ssr:false}가 필요한 상황임.
+const Bs = dynamic(
+  //@ts-ignore
+  () =>
+    new Promise((resolve) =>
+      setTimeout(() => resolve(import("@components/bs")), 3000)
+    ),
+  { ssr: false, suspense: true }
+);
+// 앱 다만들고 적용해보는게 좋을 듯.
+// 타입스크립트 적용안돼서 짜증날듯.
+// Suspense가 나은듯
 
 interface EnterForm {
   email?: string;
@@ -116,14 +139,19 @@ const Enter: NextPage = () => {
                 />
               ) : null}
               {method === "phone" ? (
-                <Input
-                  name="phone"
-                  label="Phone number"
-                  type="number"
-                  kind="phone"
-                  required
-                  register={register("phone")}
-                />
+                <>
+                  <Suspense fallback={<span>Loading something big</span>}>
+                    <Bs />
+                  </Suspense>
+                  <Input
+                    name="phone"
+                    label="Phone number"
+                    type="number"
+                    kind="phone"
+                    required
+                    register={register("phone")}
+                  />
+                </>
               ) : null}
               {method === "email" ? <Button text={"Get login link"} /> : null}
               {method === "phone" ? (

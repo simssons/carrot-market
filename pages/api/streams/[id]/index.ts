@@ -36,7 +36,7 @@ async function handler(
     stream.cloudflareUrl = "xxxxx";
   }
 
-  res.json({ ok: true, stream: isOwner ? ownedStream : stream });
+  res.json({ ok: true, stream: stream });
 }
 export default withApiSession(
   withHandler({

@@ -10,6 +10,7 @@ async function handler(
   const {
     session: { user },
   } = req;
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   const reviews = await client.review.findMany({
     where: {
       createdForId: user?.id,

@@ -32,7 +32,7 @@ model User {
   fav             Fav[]
   posts           Post[]
   answers         Answer[]
-  winderings      Wondering[]
+  wonderings      Wondering[]
   writtenReviews  Review[]    @relation(name: "writtenReviews")
   receivedReviews Review[]    @relation(name: "receivedReviews")
   sales           Sale[]

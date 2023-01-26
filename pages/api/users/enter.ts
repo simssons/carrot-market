@@ -1,5 +1,5 @@
 import mail from "@sendgrid/mail";
-import twilio from "twilio";
+// import twilio from "twilio";
 import { NextApiRequest, NextApiResponse } from "next";
 // import client from "../../@libs/server/client";
 // import withHandler from "../../@libs/server/withHandler";
@@ -8,7 +8,7 @@ import client from "@libs/server/client";
 
 mail.setApiKey(process.env.SENGRID_KEY!);
 
-const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
+// const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
 //매우중요
 //무조건 export default여야 NextJS에서 라우터로 잡아줌
