@@ -1,6 +1,23 @@
 import Document, { Head, Html, Main, NextScript } from "next/document";
 
-class CustomDocument extends Document {
+export default function MyDocumnet() {
+  console.log("Document is running");
+  return (
+    <Html lang="ko">
+      <Head>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap"
+          rel="stylesheet"
+        />
+      </Head>
+      <body>
+        <Main></Main>
+        <NextScript></NextScript>
+      </body>
+    </Html>
+  );
+}
+/* class CustomDocument extends Document {
   render(): JSX.Element {
     console.log("Document is running");
     return (
@@ -18,9 +35,9 @@ class CustomDocument extends Document {
       </Html>
     );
   }
-}
+  export default CustomDocument;
+} */
 
-export default CustomDocument;
 //NextJS앱의 html 뼈대를 짜주는 역할
 //안의 Main은 Nextjs가 앱 컴포넌트를 랜덩링 해주는 것.
 //HTML 뼈대를 짜주는 역할을 하는 파일이라 서버에서 단 한번 실행 됨.

@@ -23,14 +23,14 @@ import dynamic from "next/dynamic";
 // nextjs는 서버단에서 일반 HTML로 export 해줄거야.
 // 그러나 몇몇 라이브러리는 서버단에서 로딩하는게 불가능함. 그래서 서버단에서 불러오면 에러가 생가겠지.
 // 이게 위처럼 {ssr:false}가 필요한 상황임.
-const Bs = dynamic(
-  //@ts-ignore
-  () =>
-    new Promise((resolve) =>
-      setTimeout(() => resolve(import("@components/bs")), 3000)
-    ),
-  { ssr: false, suspense: true }
-);
+// const Bs = dynamic(
+//   //@ts-ignore
+//   () =>
+//     new Promise((resolve) =>
+//       setTimeout(() => resolve(import("@components/bs")), 3000)
+//     ),
+//   { ssr: false, suspense: true }
+// );
 // 앱 다만들고 적용해보는게 좋을 듯.
 // 타입스크립트 적용안돼서 짜증날듯.
 // Suspense가 나은듯
