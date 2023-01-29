@@ -140,9 +140,9 @@ const Enter: NextPage = () => {
               ) : null}
               {method === "phone" ? (
                 <>
-                  <Suspense fallback={<span>Loading something big</span>}>
+                  {/* <Suspense fallback={<span>Loading something big</span>}>
                     <Bs />
-                  </Suspense>
+                  </Suspense> */}
                   <Input
                     name="phone"
                     label="Phone number"
