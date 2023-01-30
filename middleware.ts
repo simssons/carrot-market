@@ -19,3 +19,6 @@ export function middleware(req: NextRequest, ev: NextFetchEvent) {
   // req.geo?.country
   // hosting provider 에 따라 다름.
 }
+export const config = {
+  matcher: "/",
+};
